@@ -29,14 +29,16 @@ const Index = () => {
 
                 {/* [Start - 2nd row] */}
                 <View style={styles.buttonRow}>
-                    <TouchableOpacity style={[styles.buttonColumn, { marginRight: 10 }]} onPress={() =>{
+                    <TouchableOpacity style={[styles.buttonColumn, { marginRight: 10 }]} onPress={() => {
                         router.push("/home/employeeList")
                     }}>
                         <Ionicons name="people" size={24} color="black" />
                         <Text style={styles.buttonText}>Employee Info</Text>
                     </TouchableOpacity>
 
-                    <TouchableOpacity style={[styles.buttonColumn, { marginLeft: 10 }]}>
+                    <TouchableOpacity style={[styles.buttonColumn, { marginLeft: 10 }]} onPress={() => {
+                        router.push("/home/markAttendance")
+                    }}>
                         <AntDesign name="calendar" size={24} color="black" />
                         <Text style={styles.buttonText}>Mark Attendance</Text>
                     </TouchableOpacity>
@@ -94,7 +96,7 @@ const styles = StyleSheet.create({
     welcomeMessage: {
         marginBottom: 20,
         alignItems: 'center',
-        marginTop:150,
+        marginTop: 150,
     },
     welcomeText: {
         fontSize: 12,
