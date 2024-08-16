@@ -40,7 +40,7 @@ const Index = () => {
                         router.push("/home/markAttendance")
                     }}>
                         <AntDesign name="calendar" size={24} color="black" />
-                        <Text style={styles.buttonText}>Mark Attendance</Text>
+                        <Text style={styles.buttonText}>Marking Attendance</Text>
                     </TouchableOpacity>
                 </View>
                 {/* [End - 2nd row] */}
@@ -49,14 +49,16 @@ const Index = () => {
 
                 {/* [Start - 3rd row] */}
                 <View style={styles.buttonRow}>
-                    <TouchableOpacity style={[styles.buttonColumn, { marginRight: 10 }]}>
-                        <AntDesign name="calculator" size={24} color="black" />
-                        <Text style={styles.buttonText}>Calculate Salary</Text>
+                    <TouchableOpacity style={[styles.buttonColumn, { marginRight: 10 }]} onPress={() => {
+                        router.push("/home/attendanceReport")
+                    }}>
+                        <Ionicons name="newspaper-outline" size={24} color="black" />
+                        <Text style={styles.buttonText}>Attendance Report</Text>
                     </TouchableOpacity>
 
                     <TouchableOpacity style={[styles.buttonColumn, { marginLeft: 10 }]}>
-                        <Ionicons name="newspaper-outline" size={24} color="black" />
-                        <Text style={styles.buttonText}>Attendance Report</Text>
+                        <AntDesign name="calculator" size={24} color="black" />
+                        <Text style={styles.buttonText}>Calculate Salary</Text>
                     </TouchableOpacity>
                 </View>
                 {/* [End - 3rd row] */}

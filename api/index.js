@@ -36,7 +36,7 @@ app.listen(port, () => {
 
 //------- [Start - API End Points] --------------
 const EmployeeModel = require("./models/employee");
-const AttendanceMode = require("./models/attendance");
+const AttendanceModel = require("./models/attendance");
 
 //save an employee
 app.post("/saveEmployee", async (req, res) => {
@@ -70,7 +70,7 @@ app.post("/saveAttendance", async (req, res) => {
         const { employeeNo, name, date, status } = req.body;
 
         //find existing attendance of an employee by id and date
-        const existingAttendance = await AttendanceMode.findOne({ employeeNo, date });
+        const existingAttendance = await AttendanceModel.findOne({ employeeNo, date });
 
         if (existingAttendance) {
             existingAttendance.status = status;
@@ -78,7 +78,7 @@ app.post("/saveAttendance", async (req, res) => {
             res.status(200).json(existingAttendance);
         }
         else {
-            const newAttendance = new AttendanceMode({
+            const newAttendance = new AttendanceModel({
                 employeeNo,
                 name,
                 date,
@@ -96,8 +96,8 @@ app.post("/saveAttendance", async (req, res) => {
 //get all attendance by date
 app.get("/getAllAttendanceByDate", async (req, res) => {
     try {
-        const {date} = req.query;
-        const attendanceForDate = await AttendanceMode.find({date: date});
+        const { date } = req.query;
+        const attendanceForDate = await AttendanceModel.find({ date: date });
         res.status(200).json(attendanceForDate);
 
     } catch (error) {
@@ -107,82 +107,112 @@ app.get("/getAllAttendanceByDate", async (req, res) => {
 
 
 //get all attendance by year month
-app.get("/getAllAttendanceByYearMonth", async (req, res) => {
+// app.get("/getAllAttendanceByYearMonth", async (req, res) => {
+//     try {
+//         const { month, year } = req.query;
+
+//         const startDate = moment(`${year}-${month}-01`, "YYYY-MM-DD").toDate();
+//         const endDate = moment(startDate).endOf("month").toDate();
+
+//         // Aggregate attendance data for all employees and date range
+//         const report = await AttendanceModel.aggregate([
+//             {
+//                 $match: {
+//                     $expr: {
+//                         $and: [
+//                             {
+//                                 $eq: [
+//                                     { $month: { $dateFromString: { dateString: "$date" } } },
+//                                     parseInt(req.query.month),
+//                                 ],
+//                             },
+//                             {
+//                                 $eq: [
+//                                     { $year: { $dateFromString: { dateString: "$date" } } },
+//                                     parseInt(req.query.year),
+//                                 ],
+//                             },
+//                         ],
+//                     },
+//                 },
+//             },
+
+//             {
+//                 $group: {
+//                     _id: "$employeeNo",
+//                     present: {
+//                         $sum: {
+//                             $cond: { if: { $eq: ["$status", "present"] }, then: 1, else: 0 },
+//                         },
+//                     },
+//                     absent: {
+//                         $sum: {
+//                             $cond: { if: { $eq: ["$status", "absent"] }, then: 1, else: 0 },
+//                         },
+//                     },
+//                 },
+//             },
+//             {
+//                 $lookup: {
+//                     from: "employees", // Name of the employee collection
+//                     localField: "_id",
+//                     foreignField: "employeeNo",
+//                     as: "employeeDetails",
+//                 },
+//             },
+//             {
+//                 $unwind: "$employeeDetails", // Unwind the employeeDetails array
+//             },
+//             {
+//                 $project: {
+//                     _id: 1,
+//                     present: 1,
+//                     absent: 1,
+//                     name: "$employeeDetails.name",
+//                     designation: "$employeeDetails.designation",
+//                     salary: "$employeeDetails.salary",
+//                     employeeNo: "$employeeDetails.employeeNo",
+//                 },
+//             },
+//         ]);
+
+//         res.status(200).json({ report });
+//     } catch (error) {
+//         console.error("Error generating attendance report:", error);
+//         res.status(500).json({ message: "Error generating the report" });
+//     }
+// });
+
+app.get('/getAllAttendanceByYearMonth', async (req, res) => {
     try {
-        const {month, year} = req.query;
+        const { year, month } = req.query;
 
-        const startDate = moment(`${year}-${month}-01`, "YYYY-MM-DD").startOf("month").toDate();
-        const endDate = moment(startDate).endOf("month").toDate();
+        if (!year || !month || isNaN(year) || isNaN(month)) {
+            return res.status(400).send('Year and month must be numeric and are required');
+        }
 
-        const attendanceReport = await AttendanceMode.aggregate([
-            {
-                $match:{
-                    $expr: {
-                        $and:[
-                            {
-                                $eqn:[
-                                    {
-                                        $month:{$dateFromString: {dateString: "$date"}},
-                                    },
-                                    parseInt(req.query.month),
-                                ],
-                            },
-                            {
-                                $eqn:[
-                                    {
-                                        $year:{$dateFromString: {dateString: "$date"}},
-                                    },
-                                    parseInt(req.query.year),
-                                ],
-                            },
-                        ],
-                    },
-                },
-            },
+        const yearNum = parseInt(year, 10);
+        const monthNum = parseInt(month, 10);
 
-            {
-                $group: {
-                    _id:"$employeeNo",
-                    present:{
-                        $sum:{
-                            $cond:{if: {$eqn:["$status","present"]}, then: 1, else: 0},
-                        }
-                    },
-                    absent:{
-                        $sum:{
-                            $cond:{if: {$eqn:["$status","absent"]}, then: 1, else: 0},
-                        }
-                    },
-                }
-            },
-            {
-                $lookup:{
-                    from: "employees", //Mongo Db collection name
-                    localField: "_id",
-                    foreignField: "employeeNo",
-                    as: "employeeDetails",
-                },
-            },
-            {
-                $unwind: "$employeeDetails",
-            },
-            {
-                $project:{
-                    _id: 1,
-                    present: 1,
-                    absent: 1,
-                    halfday: 1,
-                    name: "$employeeDetails.name",
-                    designation: "$employeeDetails.designation",
-                    salary: "$employeeDetails.salary",    
-                    employeeNo: "$employeeDetails.employeeNo",    
-                }
-            },
-        ]);
+        if (monthNum < 1 || monthNum > 12) {
+            return res.status(400).send('Month must be between 1 and 12');
+        }
 
-        res.status(200).json(attendanceReport);
+        const startDate = new Date(Date.UTC(yearNum, monthNum - 1, 1));
+        const endDate = new Date(Date.UTC(yearNum, monthNum, 1));
+
+        const query = {
+            date: { $gte: startDate, $lt: endDate }
+        };
+
+        const attendanceRecords = await AttendanceModel.find(query);
+
+        res.json(attendanceRecords);
+
     } catch (error) {
-        res.status(500).json({ message: "Error is occoured while retrieving attendance by year-month" });
+        console.error(error);
+        res.status(500).send('Internal Server Error');
     }
 });
+
 //------- [End - API End Points] ----------------
