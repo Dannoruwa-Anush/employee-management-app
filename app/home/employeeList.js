@@ -17,7 +17,7 @@ const employeeList = () => {
         const response = await axios.get(`${BASE_URL}/getAllEmployees`);
         setEmployees(response.data);
       } catch (error) {
-        console.log("Error occured while fetching employee data", error);
+        console.log("Error occured while fetching employees data", error);
       }
     }
     fetchEmployeeList();

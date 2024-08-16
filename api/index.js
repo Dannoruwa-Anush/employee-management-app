@@ -63,7 +63,60 @@ app.get("/getAllEmployees", async (req, res) => {
         const employees = await EmployeeModel.find();
         res.status(200).json(employees);
     } catch (error) {
-        res.status(500).json({ message: "Error is occoured while retrieving employee" });
+        res.status(500).json({ message: "Error is occoured while retrieving employees" });
+    }
+});
+
+//get employee by id
+app.get("/getEmployeeById/:id", async (req, res) => {
+    try {
+        const id = req.params.id;
+
+        // Check if the ID is a valid ObjectId
+        if (!mongoose.Types.ObjectId.isValid(id)) {
+            return res.status(400).json({ message: "Invalid ID format" });
+        }
+
+        const employee = await EmployeeModel.findById(id);
+
+        if (!employee) {
+            return res.status(404).json({ message: "Employee not found" });
+        }
+
+        res.status(200).json(employee);
+    } catch (error) {
+        console.error('Error occurred while retrieving employee:', error);
+        res.status(500).json({ message: "An error occurred while retrieving the employee" });
+    }
+});
+
+//update (patch) an employee
+app.put("/updateEmployee/:id", async (req, res) => {
+    try {
+        const { id } = req.params;
+        const updateData = req.body;
+
+        // Check if the ID is a valid ObjectId
+        if (!mongoose.Types.ObjectId.isValid(id)) {
+            return res.status(400).json({ message: "Invalid ID format" });
+        }
+
+        // Update the employee document
+        const updatedEmployee = await EmployeeModel.findByIdAndUpdate(
+            id, // Filter
+            { $set: updateData }, // Update operation
+            { new: true, runValidators: true } // Options: return the updated document and run validators
+        );
+
+        // Check if the employee was found and updated
+        if (!updatedEmployee) {
+            return res.status(404).json({ message: "Employee not found" });
+        }
+
+        res.status(200).json({ message: "Employee updated successfully", employee: updatedEmployee });
+    } catch (error) {
+        console.error("Error occurred while updating employee:", error);
+        res.status(500).json({ message: "Error occurred while updating employee" });
     }
 });
 

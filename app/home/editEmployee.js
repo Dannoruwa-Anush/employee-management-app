@@ -1,11 +1,15 @@
-import React, { useState } from 'react';
-import { View, Text, ScrollView, TextInput, Pressable, Alert, Platform } from 'react-native';
+import { StyleSheet, View, Text, ScrollView, TextInput, Pressable, Alert, Platform } from 'react-native';
+import React, { useEffect, useState } from 'react'
+import { useLocalSearchParams } from 'expo-router'
 import axios from 'axios';
 import { useRouter } from 'expo-router';
-import DateTimePicker from '@react-native-community/datetimepicker';
 import { BASE_URL } from '../../settings/config';
 
-const AddEmployee = () => {
+const editEmployee = () => {
+    const params = useLocalSearchParams();
+
+    const [employeeData, setEmployeeData] = useState({});
+
     const [employeeNo, setEmployeeNo] = useState("");
     const [name, setName] = useState("");
     const [nic, setNIC] = useState("");
@@ -19,6 +23,39 @@ const AddEmployee = () => {
     const [currentDateType, setCurrentDateType] = useState(''); // 'DOB' or 'Joining'
 
     const router = useRouter();
+
+    useEffect(() => {
+        const fetchEmployeeObject = async () => {
+            try {
+                const response = await axios.get(`${BASE_URL}/getEmployeeById/${params.id}`);
+                setEmployeeData(response.data);
+            } catch (error) {
+                console.log("Error occured while fetching employee data", error);
+            }
+        }
+        fetchEmployeeObject();
+    }, [params.id]);
+
+    //console.log(employeeData);
+    
+    useEffect(() => {
+        if (employeeData) {
+            setEmployeeNo(employeeData.employeeNo || '');
+            setName(employeeData.name || '');
+            setNIC(employeeData.nic || '');
+            setDateOfBirth(employeeData.dateOfBirth ? formatDate(employeeData.dateOfBirth) : '');
+            setPhoneNo(employeeData.phoneNo || '');
+            setAddress(employeeData.address || '');
+            setDesignation(employeeData.designation || '');
+            setJoiningDate(employeeData.joiningDate ? formatDate(employeeData.joiningDate) : '');
+            setSalary(employeeData.salary?.$numberDecimal || '');
+        }
+    }, [employeeData]);
+
+    const formatDate = (dateString) => {
+        const date = new Date(dateString);
+        return date.toISOString().split('T')[0]; // Format as YYYY-MM-DD
+    };
 
     const handleDateChange = (event, selectedDate) => {
         setShowDatePicker(Platform.OS === 'ios');
@@ -37,13 +74,13 @@ const AddEmployee = () => {
         setShowDatePicker(true);
     };
 
-    const handleSave = () => {
+    const handleUpdate = async () => {
         if (!employeeNo || !name || !nic || !dateOfBirth || !phoneNo || !address || !designation || !joiningDate || !salary) {
             Alert.alert("Error", "Please fill out all fields.");
             return;
         }
 
-        const employeeData = {
+        const updatedEmployee = {
             employeeNo,
             name,
             nic,
@@ -53,29 +90,17 @@ const AddEmployee = () => {
             designation,
             joiningDate,
             salary,
-            active: true, //set to ACTIVE
+            active: true, // Set to ACTIVE
         };
-        
-        axios.post(`${BASE_URL}/saveEmployee`, employeeData)
-            .then(() => {
-                Alert.alert("The employee has been saved successfully.");
 
-                setEmployeeNo("");
-                setName("");
-                setNIC("");
-                setDateOfBirth("");
-                setPhoneNo("");
-                setAddress("");
-                setDesignation("");
-                setJoiningDate("");
-                setSalary("");
-
-                router.push('/home/employeeList');
-            })
-            .catch((error) => {
-                Alert.alert("The employee has not been saved successfully.");
-                console.error("Error occurred while saving employee data", error);
-            });
+        try {
+            await axios.put(`${BASE_URL}/updateEmployee/${params.id}`, updatedEmployee);
+            Alert.alert("Success", "Employee updated successfully.");
+            router.push('/home/employeeList');
+        } catch (error) {
+            Alert.alert("Error", "Failed to update employee.");
+            console.error("Error occurred while updating employee data", error);
+        }
     };
 
     return (
@@ -185,8 +210,8 @@ const AddEmployee = () => {
                         />
                     </View>
 
-                    <Pressable onPress={handleSave} style={{ backgroundColor: "#2196F3", padding: 10, marginTop: 20, justifyContent: "center", alignItems: "center", borderRadius: 5 }}>
-                        <Text style={{ fontWeight: "bold", color: "white" }}>Save</Text>
+                    <Pressable onPress={handleUpdate} style={{ backgroundColor: "#2196F3", padding: 10, marginTop: 20, justifyContent: "center", alignItems: "center", borderRadius: 5 }}>
+                        <Text style={{ fontWeight: "bold", color: "white" }}>Update</Text>
                     </Pressable>
                 </View>
             </View>
@@ -203,6 +228,8 @@ const AddEmployee = () => {
             )}
         </ScrollView>
     );
-};
+}
 
-export default AddEmployee;
+export default editEmployee
+
+const styles = StyleSheet.create({})

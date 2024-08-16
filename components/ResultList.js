@@ -1,7 +1,11 @@
-import { FlatList, StyleSheet, Text, View } from 'react-native'
+import { FlatList, Pressable, StyleSheet, Text, View } from 'react-native'
 import React from 'react'
+import { router, useRouter } from 'expo-router';
 
 const ResultList = ({ data, newEmployee, setNewEmployee }) => {
+
+    const router = useRouter();
+
     return (
         <View style={{ padding: 10 }}>
             <FlatList data={data} renderItem={({ item }) => {
@@ -12,10 +16,19 @@ const ResultList = ({ data, newEmployee, setNewEmployee }) => {
                                 <Text style={{ color: "white", fontSize: 16 }}>{item?.name?.charAt(0)}</Text>
                             </View>
 
-                            <View>
-                                <Text style={{ fontSize: 16, fontWeight: "bold" }}>{item?.name}</Text>
-                                <Text style={{ marginTop: 5, color: "gray" }}>{item?.designation} ({item?.employeeNo})</Text>
-                            </View>
+                            <Pressable onPress={()=>{
+                                router.push({
+                                    pathname: "home/editEmployee",
+                                    params: {
+                                        id: item._id,
+                                    },
+                                });
+                            }}>
+                                <View>
+                                    <Text style={{ fontSize: 16, fontWeight: "bold" }}>{item?.name}</Text>
+                                    <Text style={{ marginTop: 5, color: "gray" }}>{item?.designation} ({item?.employeeNo})</Text>
+                                </View>
+                            </Pressable>
                         </View>
                     );
                 }
