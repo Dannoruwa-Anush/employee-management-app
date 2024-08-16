@@ -126,6 +126,7 @@ app.get('/getAllAttendanceByYearMonth', async (req, res) => {
         const startDate = new Date(Date.UTC(yearNum, monthNum - 1, 1));
         const endDate = new Date(Date.UTC(yearNum, monthNum, 1));
 
+        // Query to find attendance by start date and end date
         const query = {
             date: { $gte: startDate, $lt: endDate }
         };
@@ -207,13 +208,12 @@ app.post('/calculateSalaryForAllByYearMonth', async (req, res) => {
     }
 });
 
-
-
 //get all pay sheet for year month
 app.get('/getAllPaySheetsByYearMonth', async (req, res) => {
     try {
         const { year, month } = req.query;
 
+        // Validate year and month
         if (!year || !month || isNaN(year) || isNaN(month)) {
             return res.status(400).send('Year and month must be numeric and are required');
         }
@@ -225,14 +225,8 @@ app.get('/getAllPaySheetsByYearMonth', async (req, res) => {
             return res.status(400).send('Month must be between 1 and 12');
         }
 
-        const startDate = new Date(Date.UTC(yearNum, monthNum - 1, 1));
-        const endDate = new Date(Date.UTC(yearNum, monthNum, 1));
-
-        const query = {
-            date: { $gte: startDate, $lt: endDate }
-        };
-
-        const paySheetRecords = await AttendanceModel.find(query);
+        // Query to find pay sheets by year and month
+        const paySheetRecords = await PaySheetModel.find({ year: yearNum, month: monthNum });
 
         res.json(paySheetRecords);
 
