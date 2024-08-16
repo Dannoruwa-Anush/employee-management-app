@@ -4,6 +4,7 @@ import axios from 'axios';
 import { Ionicons, FontAwesome } from '@expo/vector-icons';
 import { router, useRouter } from 'expo-router';
 import ResultList from '../../components/ResultList';
+import { BASE_URL } from '../../settings/config';
 
 const employeeList = () => {
   const [employees, setEmployees] = useState([]);
@@ -13,7 +14,7 @@ const employeeList = () => {
   useEffect(() => {
     const fetchEmployeeList = async () => {
       try {
-        const response = await axios.get("http://192.168.8.124:3000/getAllEmployees");
+        const response = await axios.get(`${BASE_URL}/getAllEmployees`);
         setEmployees(response.data);
       } catch (error) {
         console.log("Error occured while fetching employee data", error);

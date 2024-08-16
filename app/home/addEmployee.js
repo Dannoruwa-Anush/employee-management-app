@@ -3,6 +3,7 @@ import { View, Text, ScrollView, TextInput, Pressable, Alert, Platform } from 'r
 import axios from 'axios';
 import { useRouter } from 'expo-router';
 import DateTimePicker from '@react-native-community/datetimepicker';
+import { BASE_URL } from '../../settings/config';
 
 const AddEmployee = () => {
     const [employeeNo, setEmployeeNo] = useState("");
@@ -55,7 +56,7 @@ const AddEmployee = () => {
             active: true, //set to ACTIVE
         };
         
-        axios.post("http://192.168.8.124:3000/saveEmployee", employeeData)
+        axios.post(`${BASE_URL}/saveEmployee`, employeeData)
             .then(() => {
                 Alert.alert("The employee has been saved successfully.");
 

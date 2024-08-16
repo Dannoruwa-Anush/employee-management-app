@@ -4,6 +4,7 @@ import moment from 'moment';
 import AntDesign from '@expo/vector-icons/AntDesign';
 import axios from 'axios';
 import { router, useRouter } from 'expo-router';
+import { BASE_URL } from '../../settings/config';
 
 const markAttendance = () => {
 
@@ -30,7 +31,7 @@ const markAttendance = () => {
     useEffect(() => {
         const fetchEmployeeList = async () => {
             try {
-                const response = await axios.get("http://192.168.8.124:3000/getAllEmployees");
+                const response = await axios.get(`${BASE_URL}/getAllEmployees`);
                 setEmployees(response.data);
             } catch (error) {
                 console.log("Error occured while fetching employee data", error);
@@ -45,7 +46,7 @@ const markAttendance = () => {
 
     const fetchAttendanceByDate = async () => {
         try {
-            const response = await axios.get(`http://192.168.8.124:3000/getAllAttendanceByDate`, {
+            const response = await axios.get(`${BASE_URL}/getAllAttendanceByDate`, {
                 params: {
                     date: currentDate.format("MMMM D, YYYY"),
                 },

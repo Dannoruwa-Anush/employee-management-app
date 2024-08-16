@@ -6,6 +6,7 @@ import AntDesign from '@expo/vector-icons/AntDesign';
 import FontAwesome from '@expo/vector-icons/FontAwesome';
 import Entypo from '@expo/vector-icons/Entypo';
 import axios from 'axios';
+import { BASE_URL } from '../../settings/config';
 
 const user = () => {
 
@@ -42,7 +43,7 @@ const user = () => {
 
       console.log(attendanceData);
       
-      const response = await axios.post("http://192.168.8.124:3000/saveAttendance", attendanceData);
+      const response = await axios.post(`${BASE_URL}/saveAttendance`, attendanceData);
 
       if(response.status == 200){
         Alert.alert(`The attendance of ${params?.name} has been saved successfully.`);

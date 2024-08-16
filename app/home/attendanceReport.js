@@ -4,6 +4,7 @@ import moment from 'moment';
 import AntDesign from '@expo/vector-icons/AntDesign';
 import axios from 'axios';
 import { DataTable } from 'react-native-paper';
+import { BASE_URL } from '../../settings/config';
 
 const attendanceReport = () => {
     const [attendanceData, setAttendanceData] = useState([]);
@@ -25,7 +26,7 @@ const attendanceReport = () => {
 
     const fetchAttendanceByYearMonth = async () => {
         try {
-            const response = await axios.get(`http://192.168.8.124:3000/getAllAttendanceByYearMonth`, {
+            const response = await axios.get(`${BASE_URL}/getAllAttendanceByYearMonth`, {
                 params: {
                     month: currentDate.month() + 1, // Month in MongoDB is 1-based
                     year: currentDate.year(),

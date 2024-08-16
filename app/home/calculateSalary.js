@@ -3,6 +3,7 @@ import React, { useEffect, useState } from 'react'
 import moment from 'moment';
 import AntDesign from '@expo/vector-icons/AntDesign';
 import axios from 'axios';
+import { BASE_URL } from '../../settings/config';
 
 const calculateSalary = () => {
   const [paySheetData, setPaySheetData] = useState([]);
@@ -24,7 +25,7 @@ const calculateSalary = () => {
 
   const fetchPaySheetByYearMonth = async () => {
     try {
-      const response = await axios.get(`http://192.168.8.124:3000/getAllPaySheetsByYearMonth`, {
+      const response = await axios.get(`${BASE_URL}/getAllPaySheetsByYearMonth`, {
         params: {
           month: currentDate.month() + 1, // Month in MongoDB is 1-based
           year: currentDate.year(),
@@ -52,7 +53,7 @@ const calculateSalary = () => {
 
   const handleCalculateSalary = async () => {
     try {
-      const response = await axios.post(`http://192.168.8.124:3000/calculateSalaryForAllByYearMonth`, {
+      const response = await axios.post(`${BASE_URL}/calculateSalaryForAllByYearMonth`, {
         month: currentDate.month() + 1, // Month in MongoDB is 1-based
         year: currentDate.year(),
       });
