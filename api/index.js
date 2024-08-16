@@ -140,12 +140,13 @@ app.get('/getAllAttendanceByYearMonth', async (req, res) => {
     }
 });
 
-//calculate salary for month
-app.post('/calculateSalaryForYearMonth', async (req, res) => {
-    const { employeeNo, year, month } = req.body;
+//calculate monthly salary for all employees
+app.post('/calculateSalaryForAllByYearMonth', async (req, res) => {
+    const { year, month } = req.body;
 
     try {
-        if (!year || !month || isNaN(year) || isNaN(month)) {
+        // Validate year and month
+        if (year == null || month == null || isNaN(year) || isNaN(month)) {
             return res.status(400).send('Year and month must be numeric and are required');
         }
 
@@ -156,55 +157,57 @@ app.post('/calculateSalaryForYearMonth', async (req, res) => {
             return res.status(400).send('Month must be between 1 and 12');
         }
 
-        // Find salary record
-        let paySheetRecord = await Salary.findOne({
-            employeeNo,
-            year: yearNum,
-            month: monthNum
-        });
+        // Define date range for attendance
+        const startDate = new Date(Date.UTC(yearNum, monthNum - 1, 1));
+        const endDate = new Date(Date.UTC(yearNum, monthNum, 1));
 
-        //if paySheet record does not exist, then calculate salary
-        if (!paySheetRecord) {
-            // Find employee details
-            const employee = await EmployeeModel.findOne({ employeeNo });
-            if (!employee) {
-                return res.status(404).send('Employee not found')
-            };
+        // Fetch all employees
+        const employees = await EmployeeModel.find();
 
-            // Get number of attendances with status "present"
-            const startDate = new Date(Date.UTC(yearNum, monthNum - 1, 1));
-            const endDate = new Date(Date.UTC(yearNum, monthNum, 1));
+        if (employees.length === 0) {
+            return res.status(404).send('No employees found');
+        }
 
-            const attendancePresentCount = await AttendanceModel.countDocuments({
-                employeeNo,
-                status: 'present',
-                date: { $gte: startDate, $lt: endDate }
+        for (const employee of employees) {
+            // Check if pay sheet record already exists for this employee
+            let paySheetRecord = await PaySheetModel.findOne({
+                employeeNo: employee.employeeNo,
+                year: yearNum,
+                month: monthNum
             });
 
-            // Calculate salary
-            const monthlySalary = employee.salary * attendancePresentCount;
-            const decimalSalary = Decimal.fromString(monthlySalary.toFixed(2));
+            if (!paySheetRecord) {
+                // Get number of attendances with status "present"
+                const attendancePresentCount = await AttendanceModel.countDocuments({
+                    employeeNo: employee.employeeNo,
+                    status: 'present',
+                    date: { $gte: startDate, $lt: endDate }
+                });
 
-            // Save calculated salary to PaySheet schema
-            const newPaySheet = new PaySheetModel({
-                employeeNo,
-                employeeName: employee.name,
-                year,
-                month,
-                salary: decimalSalary
-            });
+                // Calculate salary
+                const monthlySalary = employee.salary * attendancePresentCount;
+                const decimalSalary = Decimal.fromString(monthlySalary.toFixed(2));
 
-            await newPaySheet.save();
+                // Save calculated salary to PaySheet schema
+                const newPaySheet = new PaySheetModel({
+                    employeeNo: employee.employeeNo,
+                    employeeName: employee.name,
+                    year: yearNum,
+                    month: monthNum,
+                    salary: decimalSalary
+                });
 
-            res.status(200).send('Pay sheet generated successfully');
+                await newPaySheet.save();
+            }
         }
-        else{
-            return res.status(400).send('The paysheet has already been created'); 
-        }
+        res.status(200).send('Pay sheets generated successfully for all employees');
     } catch (error) {
-        res.status(500).send('Error occur while generating pay sheet');
+        console.error('Error occurred while generating pay sheets:', error);
+        res.status(500).send('Error occurred while generating pay sheets');
     }
 });
+
+
 
 //get all pay sheet for year month
 app.get('/getAllPaySheetsByYearMonth', async (req, res) => {

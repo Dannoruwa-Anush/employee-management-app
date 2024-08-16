@@ -1,4 +1,4 @@
-import { ScrollView, StyleSheet, Text, View } from 'react-native'
+import { ScrollView, StyleSheet, Text, View, Pressable, Alert } from 'react-native'
 import React, { useEffect, useState } from 'react'
 import moment from 'moment';
 import AntDesign from '@expo/vector-icons/AntDesign';
@@ -41,6 +41,26 @@ const calculateSalary = () => {
     fetchPaySheetByYearMonth();
   }, [currentDate]);
 
+
+  const handleCalculateSalary = async () => {
+    try {
+        const response = await axios.post(`http://192.168.8.124:3000/calculateSalaryForAllByYearMonth`, {
+            month: currentDate.month() + 1, // Month in MongoDB is 1-based
+            year: currentDate.year(),
+        });
+
+        if (response.status === 200) {
+            Alert.alert('The monthly salary has been calculated successfully.');
+        } else {
+            Alert.alert('Unexpected response status: ' + response.status);
+        }
+    } catch (error) {
+        console.log("Error occurred while calculating monthly salary for all employees", error);
+        Alert.alert('An error occurred: ' + (error.response?.data || 'Unknown error'));
+    }
+};
+
+
   return (
     <ScrollView style={{ flex: 1, backgroundColor: "white" }}>
       <View style={{ flexDirection: "row", alignItems: "center", gap: 10, marginLeft: "auto", marginRight: "auto", marginVertical: 20 }}>
@@ -48,6 +68,12 @@ const calculateSalary = () => {
         <Text>{formatDate(currentDate)}</Text>
 
         <AntDesign onPress={goToNextMonth} name="right" size={24} color="black" />
+      </View>
+
+      <View style={{ marginHorizontal: 12 }}>
+        <Pressable onPress={handleCalculateSalary} style={{ backgroundColor: "#2196F3", padding: 10, marginTop: 20, justifyContent: "center", alignItems: "center", borderRadius: 5 }}>
+          <Text style={{ fontWeight: "bold", color: "white" }}>Calculate</Text>
+        </Pressable>
       </View>
 
       <View style={{ marginHorizontal: 12 }}>
@@ -80,7 +106,7 @@ const calculateSalary = () => {
                   </Text>
                 </View>
               )}
-              
+
             </View>
           ))
         )}

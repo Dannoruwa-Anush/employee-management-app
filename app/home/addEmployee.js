@@ -52,7 +52,7 @@ const AddEmployee = () => {
             designation,
             joiningDate,
             salary,
-            active: true, //srt to ACTIVE
+            active: true, //set to ACTIVE
         };
         
         axios.post("http://192.168.8.124:3000/saveEmployee", employeeData)
