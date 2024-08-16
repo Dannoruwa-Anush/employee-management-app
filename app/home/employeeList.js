@@ -22,7 +22,7 @@ const employeeList = () => {
     fetchEmployeeList();
   }, []);
 
-  console.log(employees);
+  //console.log(employees);
 
   return (
     <View style={{ flex: 1, backgroundColor: "white" }}>

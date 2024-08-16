@@ -8,7 +8,7 @@ const attendanceSchema = new mongoose.Schema({
     //fields of collection
 
     employeeNo      :{type : String, required : true},
-    employeeName    :{type : String, required : true},
+    name            :{type : String, required : true},
     date            :{type : String, required : true},
     status          :{type : String, required : true},
 });

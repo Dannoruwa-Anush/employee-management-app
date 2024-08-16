@@ -70,7 +70,7 @@ app.post("/saveAttendance", async (req, res) => {
         const { employeeNo, name, date, status } = req.body;
 
         //find existing attendance of an employee by id and date
-        const existingAttendance = AttendanceMode.findOne({ employeeNo, date });
+        const existingAttendance = await AttendanceMode.findOne({ employeeNo, date });
 
         if (existingAttendance) {
             existingAttendance.status = status;
@@ -80,7 +80,7 @@ app.post("/saveAttendance", async (req, res) => {
         else {
             const newAttendance = new AttendanceMode({
                 employeeNo,
-                employeeName,
+                name,
                 date,
                 status,
             });
@@ -153,16 +153,6 @@ app.get("/getAllAttendanceByYearMonth", async (req, res) => {
                             $cond:{if: {$eqn:["$status","absent"]}, then: 1, else: 0},
                         }
                     },
-                    halfday:{
-                        $sum:{
-                            $cond:{if: {$eqn:["$status","halfday"]}, then: 1, else: 0},
-                        }
-                    },
-                    holiday:{
-                        $sum:{
-                            $cond:{if: {$eqn:["$status","holiday"]}, then: 1, else: 0},
-                        }
-                    }
                 }
             },
             {
