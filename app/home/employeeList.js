@@ -27,7 +27,9 @@ const employeeList = () => {
   return (
     <View style={{ flex: 1, backgroundColor: "white" }}>
       <View style={{ flexDirection: "row", alignItems: "center", backgroundColor: "white" }}>
-        <Ionicons style={{ marginLeft: 10 }} name="arrow-back" size={24} color="black" />
+        <Pressable onPress={() => router.push("/home")}>
+          <Ionicons style={{ marginLeft: 10 }} name="arrow-back" size={24} color="black" />
+        </Pressable>
         <Pressable style={{ flexDirection: "row", alignItems: "center", marginHorizontal: 7, gap: 10, backgroundColor: "white", height: 40, borderRadius: 4, flex: 1 }}>
           <Ionicons name="search-outline" size={24} color="black" />
           <TextInput value={newEmployee} onChangeText={(text) => setNewEmployee(text)} style={{ flex: 1 }} placeholder='Search' />
