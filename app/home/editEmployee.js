@@ -37,7 +37,7 @@ const editEmployee = () => {
     }, [params.id]);
 
     //console.log(employeeData);
-    
+
     useEffect(() => {
         if (employeeData) {
             setEmployeeNo(employeeData.employeeNo || '');
@@ -102,6 +102,40 @@ const editEmployee = () => {
             console.error("Error occurred while updating employee data", error);
         }
     };
+
+    const handleDelete = async () => {
+        try {
+            // Confirm deletion with the user
+            const confirmation = await new Promise((resolve) => {
+                Alert.alert(
+                    "Confirm Deletion",
+                    "Are you sure you want to delete this employee?",
+                    [
+                        { text: "Cancel", onPress: () => resolve(false), style: "cancel" },
+                        { text: "OK", onPress: () => resolve(true) }
+                    ]
+                );
+            });
+
+            if (!confirmation) {
+                return; // User canceled the deletion
+            } 
+
+            const response = await axios.delete(`${BASE_URL}/deleteEmployee/${params.id}`);
+
+            if (response.status === 200) {
+                Alert.alert("Success", "Employee deleted successfully.");
+                router.push('/home/employeeList');
+            } else {
+                Alert.alert("Error", "Failed to delete employee. Please try again.");
+                console.log("Failed to delete employee:", response.data.message);
+            }
+        } catch (error) {
+            Alert.alert("Error", "An error occurred while deleting the employee.");
+            console.error("Error occurred while deleting employee data:", error);
+        }
+    };
+
 
     return (
         <ScrollView>
@@ -210,9 +244,15 @@ const editEmployee = () => {
                         />
                     </View>
 
-                    <Pressable onPress={handleUpdate} style={{ backgroundColor: "#2196F3", padding: 10, marginTop: 20, justifyContent: "center", alignItems: "center", borderRadius: 5 }}>
-                        <Text style={{ fontWeight: "bold", color: "white" }}>Update</Text>
-                    </Pressable>
+                    <View style={{ flexDirection: 'row', justifyContent: 'space-between', marginTop: 20 }}>
+                        <Pressable onPress={handleUpdate} style={{ flex: 1, backgroundColor: "#2196F3", padding: 10, borderRadius: 5, alignItems: "center", marginHorizontal: 5 }}>
+                            <Text style={{ fontWeight: "bold", color: "white" }}>Update</Text>
+                        </Pressable>
+
+                        <Pressable onPress={handleDelete} style={{ flex: 1, backgroundColor: "#F44336", padding: 10, borderRadius: 5, alignItems: "center", marginHorizontal: 5 }}>
+                            <Text style={{ fontWeight: "bold", color: "white" }}>Delete</Text>
+                        </Pressable>
+                    </View>
                 </View>
             </View>
 

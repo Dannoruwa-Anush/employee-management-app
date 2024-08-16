@@ -120,6 +120,36 @@ app.put("/updateEmployee/:id", async (req, res) => {
     }
 });
 
+//delete employee by id
+app.delete("/deleteEmployee/:id", async (req, res) => {
+    try {
+        const id = req.params.id;
+
+        // Check if the ID is a valid ObjectId
+        if (!mongoose.Types.ObjectId.isValid(id)) {
+            console.log("Invalid ID format:", id);
+            return res.status(400).json({ message: "Invalid ID format" });
+        }
+
+        // Create a new ObjectId instance
+        const objectId = new mongoose.Types.ObjectId(id);
+
+        // Perform the delete operation
+        const result = await EmployeeModel.deleteOne({ _id: objectId });
+
+        // Check if a document was deleted
+        if (result.deletedCount === 0) {
+            console.log("Employee not found with ID:", id);
+            return res.status(404).json({ message: "Employee not found" });
+        }
+        
+        res.status(200).json({ message: "Employee successfully deleted" });
+    } catch (error) {
+        console.error('Error occurred while deleting employee:', error);
+        res.status(500).json({ message: "An internal server error occurred while deleting the employee" });
+    }
+});
+
 //save attendance
 app.post("/saveAttendance", async (req, res) => {
     try {
