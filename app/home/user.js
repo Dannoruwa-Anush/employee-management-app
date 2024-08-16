@@ -7,6 +7,7 @@ import FontAwesome from '@expo/vector-icons/FontAwesome';
 import Entypo from '@expo/vector-icons/Entypo';
 import axios from 'axios';
 import { BASE_URL } from '../../settings/config';
+import { useRouter } from 'expo-router';
 
 const user = () => {
 
@@ -32,6 +33,8 @@ const user = () => {
     return date.format("MMMM  D, YYYY")
   }
 
+  const router = useRouter();
+
   const handleSaveAttendance = async() => {
     try{
       const attendanceData = {
@@ -41,12 +44,13 @@ const user = () => {
         status: attendanceStatus,
       };
 
-      console.log(attendanceData);
+      //console.log(attendanceData);
       
       const response = await axios.post(`${BASE_URL}/saveAttendance`, attendanceData);
 
       if(response.status == 200){
         Alert.alert(`The attendance of ${params?.name} has been saved successfully.`);
+        router.push('/home/markAttendance');
       }
     }
     catch(error){
