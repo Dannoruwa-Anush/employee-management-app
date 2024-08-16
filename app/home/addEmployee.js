@@ -1,6 +1,7 @@
 import { View, Text, ScrollView, TextInput, Pressable, Alert } from 'react-native'
 import React, { useEffect, useState } from 'react'
 import axios from 'axios';
+import { useRouter } from 'expo-router';
 
 const addEmployee = () => {
     const [employeeNo, setEmployeeNo] = useState("");
@@ -12,7 +13,17 @@ const addEmployee = () => {
     const [designation, setDesignation] = useState("");
     const [joiningDate, setJoiningDate] = useState("");
     const [salary, setSalary] = useState("");
+
+    const router = useRouter();
+
     const handleSave = () =>{
+        //---[Start: input field validation]----
+        if (!employeeNo || !name || !nic || !dateOfBirth || !phoneNo || !address || !designation || !joiningDate || !salary) {
+            Alert.alert("Error", "Please fill out all fields.");
+            return;
+        }
+        //---[End: input field validation]-------
+
         const employeeData = {
             employeeNo  :employeeNo,
             name        :name,
@@ -38,6 +49,8 @@ const addEmployee = () => {
             setDesignation("");
             setJoiningDate("");
             setSalary("");
+
+            router.push('/home/employeeList'); //Navigate to employeeList
         }).catch((error) => {
             Alert.alert("The employee has not been saved successfully.");
             console.log("Error occured while saving employee data", error)
