@@ -7,6 +7,8 @@ const bodyParser = require('body-parser'); //Import body-parser package
 
 const mongoose = require('mongoose'); //Import mongoose package
 
+const Decimal = require('mongodb').Decimal128;
+
 const moment = require('moment');
 
 const app = express(); //Initialize an app
@@ -37,6 +39,7 @@ app.listen(port, () => {
 //------- [Start - API End Points] --------------
 const EmployeeModel = require("./models/employee");
 const AttendanceModel = require("./models/attendance");
+const PaySheetModel = require("./models/paySheet")
 
 //save an employee
 app.post("/saveEmployee", async (req, res) => {
@@ -137,4 +140,102 @@ app.get('/getAllAttendanceByYearMonth', async (req, res) => {
     }
 });
 
+//calculate salary for month
+app.post('/calculateSalaryForYearMonth', async (req, res) => {
+    const { employeeNo, year, month } = req.body;
+
+    try {
+        if (!year || !month || isNaN(year) || isNaN(month)) {
+            return res.status(400).send('Year and month must be numeric and are required');
+        }
+
+        const yearNum = parseInt(year, 10);
+        const monthNum = parseInt(month, 10);
+
+        if (monthNum < 1 || monthNum > 12) {
+            return res.status(400).send('Month must be between 1 and 12');
+        }
+
+        // Find salary record
+        let paySheetRecord = await Salary.findOne({
+            employeeNo,
+            year: yearNum,
+            month: monthNum
+        });
+
+        //if paySheet record does not exist, then calculate salary
+        if (!paySheetRecord) {
+            // Find employee details
+            const employee = await EmployeeModel.findOne({ employeeNo });
+            if (!employee) {
+                return res.status(404).send('Employee not found')
+            };
+
+            // Get number of attendances with status "present"
+            const startDate = new Date(Date.UTC(yearNum, monthNum - 1, 1));
+            const endDate = new Date(Date.UTC(yearNum, monthNum, 1));
+
+            const attendancePresentCount = await AttendanceModel.countDocuments({
+                employeeNo,
+                status: 'present',
+                date: { $gte: startDate, $lt: endDate }
+            });
+
+            // Calculate salary
+            const monthlySalary = employee.salary * attendancePresentCount;
+            const decimalSalary = Decimal.fromString(monthlySalary.toFixed(2));
+
+            // Save calculated salary to PaySheet schema
+            const newPaySheet = new PaySheetModel({
+                employeeNo,
+                employeeName: employee.name,
+                year,
+                month,
+                salary: decimalSalary
+            });
+
+            await newPaySheet.save();
+
+            res.status(200).send('Pay sheet generated successfully');
+        }
+        else{
+            return res.status(400).send('The paysheet has already been created'); 
+        }
+    } catch (error) {
+        res.status(500).send('Error occur while generating pay sheet');
+    }
+});
+
+//get all pay sheet for year month
+app.get('/getAllPaySheetsByYearMonth', async (req, res) => {
+    try {
+        const { year, month } = req.query;
+
+        if (!year || !month || isNaN(year) || isNaN(month)) {
+            return res.status(400).send('Year and month must be numeric and are required');
+        }
+
+        const yearNum = parseInt(year, 10);
+        const monthNum = parseInt(month, 10);
+
+        if (monthNum < 1 || monthNum > 12) {
+            return res.status(400).send('Month must be between 1 and 12');
+        }
+
+        const startDate = new Date(Date.UTC(yearNum, monthNum - 1, 1));
+        const endDate = new Date(Date.UTC(yearNum, monthNum, 1));
+
+        const query = {
+            date: { $gte: startDate, $lt: endDate }
+        };
+
+        const paySheetRecords = await AttendanceModel.find(query);
+
+        res.json(paySheetRecords);
+
+    } catch (error) {
+        console.error(error);
+        res.status(500).send('Internal Server Error');
+    }
+});
 //------- [End - API End Points] ----------------

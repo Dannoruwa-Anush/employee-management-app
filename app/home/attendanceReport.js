@@ -49,7 +49,7 @@ const attendanceReport = () => {
         return { present: presentCount, absent: absentCount };
     }
 
-    console.log(attendanceData);
+    //console.log(attendanceData);
 
     return (
         <ScrollView style={{ flex: 1, backgroundColor: "white" }}>

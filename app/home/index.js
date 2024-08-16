@@ -56,7 +56,9 @@ const Index = () => {
                         <Text style={styles.buttonText}>Attendance Report</Text>
                     </TouchableOpacity>
 
-                    <TouchableOpacity style={[styles.buttonColumn, { marginLeft: 10 }]}>
+                    <TouchableOpacity style={[styles.buttonColumn, { marginLeft: 10 }]} onPress={() => {
+                        router.push("/home/calculateSalary")
+                    }}>
                         <AntDesign name="calculator" size={24} color="black" />
                         <Text style={styles.buttonText}>Calculate Salary</Text>
                     </TouchableOpacity>
