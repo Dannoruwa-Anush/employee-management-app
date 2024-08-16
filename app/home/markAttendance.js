@@ -60,6 +60,17 @@ const markAttendance = () => {
         fetchAttendanceByDate();
     }, [currentDate]);
 
+    const employeeWithAttendance = employees.map((employee) => {
+        const attendanceRecord = attendance.find((record) => 
+            record.employeeNo === employee.employeeNo
+        );
+    
+        return {
+            ...employee,
+            status: attendanceRecord ? attendanceRecord.status : "",
+        };
+    });
+    
     return (
         <View style={{ flex: 1, backgroundColor: "white" }}>
             <Pressable>
@@ -71,7 +82,7 @@ const markAttendance = () => {
                 </View>
 
                 <View style={{ marginHorizontal: 12 }}>
-                    {employees.map((item, index) => (
+                    {employeeWithAttendance.map((item, index) => (
                         <Pressable
                             onPress={() =>
                                 router.push({
@@ -84,15 +95,23 @@ const markAttendance = () => {
                                     },
                                 })
                             }
-                            key={index} style={{ flexDirection: "row", alignItems: "center", gap: 10 }}>
+                            key={index} style={{ flexDirection: "row", alignItems: "center", gap: 10, padding: 10 }}>
                             <View style={{ width: 50, height: 50, borderRadius: 8, padding: 10, backgroundColor: "#4b6cb7", alignItems: "center", justifyContent: "center" }}>
                                 <Text style={{ color: "white", fontSize: 16 }}>{item?.name?.charAt(0)}</Text>
                             </View>
 
-                            <View>
+                            <View style={{flex: 1}}>
                                 <Text style={{ fontSize: 16, fontWeight: "bold" }}>{item?.name}</Text>
                                 <Text style={{ marginTop: 5, color: "gray" }}>{item?.designation} ({item?.employeeNo})</Text>
                             </View>
+
+                            {item?.status && (
+                                <View style={{ width: 50, height: 50, borderRadius: 8, padding: 10, backgroundColor: "#7FFFD4", alignItems: "center", justifyContent: "center" }}>
+                                    <Text style={{ fontSize: 16, color: "black", fontWeight: "bold" }}>
+                                        {item.status.charAt(0)}
+                                    </Text>
+                                </View>
+                            )}
                         </Pressable>
                     ))}
                 </View>
