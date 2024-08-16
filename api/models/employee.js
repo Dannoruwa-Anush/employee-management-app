@@ -15,7 +15,7 @@ const employeeSchema = new mongoose.Schema({
     address     :{type : String, required : true},
     designation :{type : String, required : true},
     joiningDate :{type : Date, required : true},
-    salary      :{type: mongoose.Schema.Types.Decimal128, required: true}, // Use Decimal128 for double
+    dailyWage   :{type: mongoose.Schema.Types.Decimal128, required: true}, // Use Decimal128 for double
     active      :{type : Boolean, required : true},
     createdAt   :{type : Date, default: Date.now},
     updatedAt   :{type : Date, default: Date.now},

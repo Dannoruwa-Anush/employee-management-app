@@ -76,7 +76,7 @@ const user = () => {
       </Pressable>
 
       <Text style={{ fontSize: 16, fontWeight: "500", marginHorizontal: 12 }}>
-        Salary Rs: {params?.salary}
+        Daily Wage Rs: {params?.dailyWage}
       </Text>
 
       <View style={{ marginHorizontal: 12 }}>

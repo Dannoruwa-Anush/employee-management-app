@@ -44,10 +44,10 @@ const PaySheetModel = require("./models/paySheet")
 //save an employee
 app.post("/saveEmployee", async (req, res) => {
     try {
-        const { employeeNo, name, nic, dateOfBirth, phoneNo, address, designation, joiningDate, salary, active } = req.body;
+        const { employeeNo, name, nic, dateOfBirth, phoneNo, address, designation, joiningDate, dailyWage, active } = req.body;
         //create a new employee 
         const newEmployee = new EmployeeModel({
-            employeeNo, name, nic, dateOfBirth, phoneNo, address, designation, joiningDate, salary, active
+            employeeNo, name, nic, dateOfBirth, phoneNo, address, designation, joiningDate, dailyWage, active
         });
         await newEmployee.save();
         res.status(201).json({ message: "Employee is saved successfully", employee: newEmployee });
@@ -269,7 +269,7 @@ app.post('/calculateSalaryForAllByYearMonth', async (req, res) => {
                 });
 
                 // Calculate salary
-                const monthlySalary = employee.salary * attendancePresentCount;
+                const monthlySalary = employee.dailyWage * attendancePresentCount;
                 const decimalSalary = Decimal.fromString(monthlySalary.toFixed(2));
 
                 // Save calculated salary to PaySheet schema

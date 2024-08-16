@@ -61,6 +61,10 @@ const markAttendance = () => {
         fetchAttendanceByDate();
     }, [currentDate]);
 
+    const formatDailyWage = (dailyWage) => {
+        return dailyWage && dailyWage.$numberDecimal ? dailyWage.$numberDecimal : "N/A";
+    };
+
     const employeeWithAttendance = employees.map((employee) => {
         const attendanceRecord = attendance.find((record) => 
             record.employeeNo === employee.employeeNo
@@ -69,9 +73,12 @@ const markAttendance = () => {
         return {
             ...employee,
             status: attendanceRecord ? attendanceRecord.status : "",
+            formattedDailyWage: formatDailyWage(employee.dailyWage),
         };
     });
     
+    //console.log(employeeWithAttendance);
+
     return (
         <View style={{ flex: 1, backgroundColor: "white" }}>
             <Pressable>
@@ -91,7 +98,7 @@ const markAttendance = () => {
                                     params: {
                                         name: item.name,
                                         employeeNo: item.employeeNo,
-                                        salary: item?.salary,
+                                        dailyWage: item?.formattedDailyWage,
                                         designation: item?.designation,
                                     },
                                 })

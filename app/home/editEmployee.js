@@ -18,7 +18,7 @@ const editEmployee = () => {
     const [address, setAddress] = useState("");
     const [designation, setDesignation] = useState("");
     const [joiningDate, setJoiningDate] = useState("");
-    const [salary, setSalary] = useState("");
+    const [dailyWage, setDailyWage] = useState("");
     const [showDatePicker, setShowDatePicker] = useState(false);
     const [currentDateType, setCurrentDateType] = useState(''); // 'DOB' or 'Joining'
 
@@ -48,7 +48,7 @@ const editEmployee = () => {
             setAddress(employeeData.address || '');
             setDesignation(employeeData.designation || '');
             setJoiningDate(employeeData.joiningDate ? formatDate(employeeData.joiningDate) : '');
-            setSalary(employeeData.salary?.$numberDecimal || '');
+            setDailyWage(employeeData.dailyWage?.$numberDecimal || '');
         }
     }, [employeeData]);
 
@@ -75,7 +75,7 @@ const editEmployee = () => {
     };
 
     const handleUpdate = async () => {
-        if (!employeeNo || !name || !nic || !dateOfBirth || !phoneNo || !address || !designation || !joiningDate || !salary) {
+        if (!employeeNo || !name || !nic || !dateOfBirth || !phoneNo || !address || !designation || !joiningDate || !dailyWage) {
             Alert.alert("Error", "Please fill out all fields.");
             return;
         }
@@ -89,7 +89,7 @@ const editEmployee = () => {
             address,
             designation,
             joiningDate,
-            salary,
+            dailyWage,
             active: true, // Set to ACTIVE
         };
 
@@ -236,10 +236,10 @@ const editEmployee = () => {
                     <View style={{ marginVertical: 10 }}>
                         <Text style={{ fontSize: 17, fontWeight: "bold" }}>Daily Wage</Text>
                         <TextInput
-                            value={salary}
-                            onChangeText={setSalary}
+                            value={dailyWage}
+                            onChangeText={setDailyWage}
                             style={{ padding: 10, borderColor: "#D0D0D0", borderWidth: 1, marginTop: 10, borderRadius: 5 }}
-                            placeholder='Salary'
+                            placeholder='Daily Wage'
                             placeholderTextColor={"black"}
                         />
                     </View>
