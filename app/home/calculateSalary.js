@@ -37,6 +37,8 @@ const calculateSalary = () => {
     }
   };
 
+  console.log(paySheetData);
+  
   useEffect(() => {
     fetchPaySheetByYearMonth();
   }, [currentDate]);
@@ -51,12 +53,10 @@ const calculateSalary = () => {
 
         if (response.status === 200) {
             Alert.alert('The monthly salary has been calculated successfully.');
-        } else {
-            Alert.alert('Unexpected response status: ' + response.status);
         }
     } catch (error) {
         console.log("Error occurred while calculating monthly salary for all employees", error);
-        Alert.alert('An error occurred: ' + (error.response?.data || 'Unknown error'));
+        Alert.alert("Error occurred while calculating monthly salary for all employees");
     }
 };
 
