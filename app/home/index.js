@@ -60,7 +60,7 @@ const Index = () => {
                         router.push("/home/calculateSalary")
                     }}>
                         <AntDesign name="calculator" size={24} color="black" />
-                        <Text style={styles.buttonText}>Calculate Salary</Text>
+                        <Text style={styles.buttonText}>Calculating Salary</Text>
                     </TouchableOpacity>
                 </View>
                 {/* [End - 3rd row] */}
