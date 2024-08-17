@@ -2,6 +2,7 @@ import { TouchableOpacity, Pressable, StyleSheet, Text, View, TextInput } from '
 import React from 'react';
 import { LinearGradient } from 'expo-linear-gradient';
 import { AntDesign, FontAwesome6, Ionicons } from '@expo/vector-icons'; // import expo icons
+import FontAwesome5 from '@expo/vector-icons/FontAwesome5';
 import { router, useRouter } from 'expo-router';
 
 const Index = () => {
@@ -50,10 +51,10 @@ const Index = () => {
                 {/* [Start - 3rd row] */}
                 <View style={styles.buttonRow}>
                     <TouchableOpacity style={[styles.buttonColumn, { marginRight: 10 }]} onPress={() => {
-                        router.push("/home/attendanceReport")
+                        router.push("/home/taskList")
                     }}>
-                        <Ionicons name="newspaper-outline" size={24} color="black" />
-                        <Text style={styles.buttonText}>Attendance Report</Text>
+                        <FontAwesome5 name="tasks" size={24} color="black" />
+                        <Text style={styles.buttonText}>Assigning Task</Text>
                     </TouchableOpacity>
 
                     <TouchableOpacity style={[styles.buttonColumn, { marginLeft: 10 }]} onPress={() => {
@@ -64,6 +65,19 @@ const Index = () => {
                     </TouchableOpacity>
                 </View>
                 {/* [End - 3rd row] */}
+
+
+
+                {/* [Start - 4th row] */}
+                <View style={styles.buttonRow}>
+                    <TouchableOpacity style={[styles.buttonColumn]} onPress={() => {
+                        router.push("/home/attendanceReport")
+                    }}>
+                        <Ionicons name="newspaper-outline" size={24} color="black" />
+                        <Text style={styles.buttonText}>Attendance Report</Text>
+                    </TouchableOpacity>
+                </View>
+                {/* [End - 4th row] */}
             </View>
             {/* [End - Main content section] */}
 
@@ -100,7 +114,7 @@ const styles = StyleSheet.create({
     welcomeMessage: {
         marginBottom: 20,
         alignItems: 'center',
-        marginTop: 150,
+        marginTop: 100,
     },
     welcomeText: {
         fontSize: 12,

@@ -39,7 +39,8 @@ app.listen(port, () => {
 //------- [Start - API End Points] --------------
 const EmployeeModel = require("./models/employee");
 const AttendanceModel = require("./models/attendance");
-const PaySheetModel = require("./models/paySheet")
+const PaySheetModel = require("./models/paySheet");
+const TaskModel = require("./models/task");
 
 //save an employee
 app.post("/saveEmployee", async (req, res) => {
@@ -318,4 +319,55 @@ app.get('/getAllPaySheetsByYearMonth', async (req, res) => {
         res.status(500).send('Internal Server Error');
     }
 });
+
+//save a task
+app.post("/saveTask", async (req, res) => {
+    try {
+        const { employeeNo, employeeName, taskName, taskStatus } = req.body;
+        //create a new task 
+        const newTask = new TaskModel({
+            employeeNo, employeeName, taskName, taskStatus
+        });
+        await newTask.save();
+        res.status(201).json({ message: "Task is saved successfully", task: newTask });
+    } catch (error) {
+        console.log(error + " is occoured while saving task");
+        res.status(500).json({ message: "Error is occoured while saving task" });
+    }
+});
+
+
+//get all task by date
+app.get("/getAllTaskByDate", async (req, res) => {
+    try {
+        // Extract the date from the query parameters
+        const { date } = req.query;
+
+        // Check if date is provided and valid
+        if (!date) {
+            return res.status(400).json({ message: "Date query parameter is required" });
+        }
+
+        // Convert the date string to a Date object
+        const startOfDay = new Date(date);
+        const endOfDay = new Date(startOfDay);
+        endOfDay.setDate(startOfDay.getDate() + 1);
+
+        // Query the database for tasks created within the date range
+        const tasksForDate = await TaskModel.find({
+            createdAt: {
+                $gte: startOfDay,
+                $lt: endOfDay
+            }
+        });
+
+        // Return the tasks in the response
+        res.status(200).json(tasksForDate);
+
+    } catch (error) {
+        // Log the error and send a response
+        console.error(error);
+        res.status(500).json({ message: "Error occurred while retrieving tasks for the date" });
+    }
+}); 
 //------- [End - API End Points] ----------------
