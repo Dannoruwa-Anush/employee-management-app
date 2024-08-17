@@ -13,6 +13,7 @@ export default function Layout(){
             <Stack.Screen name="editEmployee"/>
             <Stack.Screen name="taskList"/>
             <Stack.Screen name="addTask"/>
+            <Stack.Screen name="editTask"/>
         </Stack>
     );
 } 

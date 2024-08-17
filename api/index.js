@@ -370,4 +370,35 @@ app.get("/getAllTaskByDate", async (req, res) => {
         res.status(500).json({ message: "Error occurred while retrieving tasks for the date" });
     }
 }); 
+
+
+//update (patch) ststus of task
+app.put("/updateTaskStatus/:id", async (req, res) => {
+    try {
+        const { id } = req.params;
+        const updateData = req.body;
+
+        // Check if the ID is a valid ObjectId
+        if (!mongoose.Types.ObjectId.isValid(id)) {
+            return res.status(400).json({ message: "Invalid ID format" });
+        }
+
+        // Update the task document
+        const updatedTask = await TaskModel.findByIdAndUpdate(
+            id, // Filter
+            { $set: updateData }, // Update operation
+            { new: true, runValidators: true } // Options: return the updated document and run validators
+        );
+
+        // Check if the task was found and updated
+        if (!updatedTask) {
+            return res.status(404).json({ message: "Task not found" });
+        }
+
+        res.status(200).json({ message: "Task updated successfully", task: updatedTask });
+    } catch (error) {
+        console.error("Error occurred while updating task:", error);
+        res.status(500).json({ message: "Error occurred while updating task" });
+    }
+});
 //------- [End - API End Points] ----------------
