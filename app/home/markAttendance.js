@@ -1,4 +1,4 @@
-import { Pressable, StyleSheet, Text, View } from 'react-native'
+import { Pressable, StyleSheet, Text, View, ScrollView} from 'react-native'
 import React, { useEffect, useState } from 'react'
 import moment from 'moment';
 import AntDesign from '@expo/vector-icons/AntDesign';
@@ -80,7 +80,7 @@ const markAttendance = () => {
     //console.log(employeeWithAttendance);
 
     return (
-        <View style={{ flex: 1, backgroundColor: "white" }}>
+        <ScrollView style={{ flex: 1, backgroundColor: "white" }}>
             <Pressable>
                 <View style={{ flexDirection: "row", alignItems: "center", gap: 10, marginLeft: "auto", marginRight: "auto", marginVertical: 20 }}>
                     <AntDesign onPress={goToPreviousDate} name="left" size={24} color="black" />
@@ -124,7 +124,7 @@ const markAttendance = () => {
                     ))}
                 </View>
             </Pressable>
-        </View>
+        </ScrollView>
     )
 }
 
