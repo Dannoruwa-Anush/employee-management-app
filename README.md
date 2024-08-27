@@ -7,8 +7,9 @@ The workspace contains two folders by where:
 # Getting Started
 ## Prerequisites
   -  VsCode https://code.visualstudio.com
-  -  Angular CLI https://angular.io/
+  -  Node Js https://nodejs.org/en
   -  Mongo Db https://mongodb.com/
+  -  React Native Expo https://expo.dev/
     
 ## Installation
 
@@ -28,26 +29,33 @@ The workspace contains two folders by where:
 
 # Screenshots
 
- 1. 
-    
-    ![1]()
+ 1. Home Screen
 
- 2. 
-    
-    ![2]()
+   ![Screenshot_20240827-101236-1](https://github.com/user-attachments/assets/785fa700-6ca6-41c6-ae8d-330b6e274af6)
 
-3. 
-   
-    ![3]()
+   ![Screenshot_20240827-101312-1](https://github.com/user-attachments/assets/21e68103-7a41-403f-a665-dd8389bee850)
 
-4. 
+   ![Screenshot_20240827-101320](https://github.com/user-attachments/assets/a1d141d6-8a92-4317-9703-103bfaa1a325)
 
-   ![4]()
+   ![Screenshot_20240827-101320-1](https://github.com/user-attachments/assets/4f3b5b19-73b8-4677-a83e-527537aaecad)
 
-5. 
+   ![Screenshot_20240827-101431-1](https://github.com/user-attachments/assets/39c11614-0392-4fe0-afa8-511b5d24f740)
 
-   ![5]()
+   ![Screenshot_20240827-101534-1](https://github.com/user-attachments/assets/eeb0ed49-c352-4299-9b42-8fca0969491b)
 
-6. 
-   
-   ![6]()
+   ![Screenshot_20240827-101547-1](https://github.com/user-attachments/assets/a787077d-fcfb-47e8-a014-e2edfd8c6c14)
+
+   ![Screenshot_20240827-101613-1](https://github.com/user-attachments/assets/12966beb-c0b2-4982-9a9d-15579c97d648)
+
+   ![Screenshot_20240827-101618-1](https://github.com/user-attachments/assets/c718f196-1092-4a00-9b38-2586c722ae36)
+
+   ![Screenshot_20240827-101631-1](https://github.com/user-attachments/assets/6ba3f422-13f9-4061-bdc5-0ce7a636b421)
+
+   ![Screenshot_20240827-101635-1](https://github.com/user-attachments/assets/812f318a-e316-41e2-aa7b-967ee8c97c5a)
+
+  ![Screenshot_20240827-101647-1](https://github.com/user-attachments/assets/53f71493-d6ea-428f-85c7-be3e7e34380f)
+
+
+
+
+
